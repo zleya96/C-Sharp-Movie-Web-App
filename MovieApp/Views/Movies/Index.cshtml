@@ -1,0 +1,123 @@
+@model IEnumerable<MovieApp.Models.Movie>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Movie List</h1>
+
+<p>
+    <a asp-action="Create">
+        <input type="button" class="btn btn-success grow" value="Add a New Movie" />
+    </a>
+</p>
+
+<form asp-controller="Movies" asp-action="Index">
+    <p>
+        Search by Name: <input type="text" name="SearchString" />
+        <input type="submit" value="Filter" class="grow" />
+        
+    </p>
+</form>
+
+@if (ViewData["Error"] != null)
+{
+    <div class="red">
+        <p><img src="images/notification-bell.png" class="bell-img"/><strong>Error:</strong> @ViewData["Error"].ToString()</p>
+    </div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="green">
+        <p><img src="images/notification-bell.png" class="bell-img"/><strong> Success:</strong> @TempData["Success"].ToString()</p>
+    </div>
+}
+<table class="table" id="movie-table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReleaseYear)
+            </th>
+            <th style="text-align: center">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="grow">
+                <td class="table-overflow" title="@Html.DisplayFor(modelItem => item.Name)">
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+
+                <td class="table-overflow" title="@Html.DisplayFor(modelItem => item.Description)">
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReleaseYear)
+                </td>
+                <td style="text-align: center">
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="remove-underline">
+                        <img src="images/edit.png" alt="Edit" />
+                    </a> |
+                    <a asp-action="Details" asp-route-id="@item.Id" class="remove-underline">
+                        <img src="images/details.png" alt="Details" />
+                    </a> |
+                    @{
+                        //var rowCopy = item.Name + " - " + item.Description + " - " + item.ReleaseYear;
+                        var name = item.Name;
+                        var description = item.Description;
+                        var year = item.ReleaseYear;
+                    }                    
+                        <img src="images/copy.png" alt="Copy" onclick="copyToClipboard('@name' + ' - ' + '@description' + ' - ' + @year)" class="remove-underline pointer"/> |
+                    
+                    <a asp-action="Delete" asp-route-id="@item.Id">
+                        <img src="images/red-trash.png" alt="Delete" />
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+<script>
+    function copyToClipboard(message) {
+        navigator.clipboard.writeText(message);
+    }
+
+    //function sortTable() {
+    //    var table, rows, switching, i, x, y, shouldSwitch;
+    //    table = document.getElementById("movie-table");
+    //    switching = true;
+
+    //    while (switching) {
+        
+    //        switching = false;
+    //        rows = table.querySelectorAll("TR");
+          
+    //        for (i = 1; i < (rows.length - 1); i++) {
+    //            shouldSwitch = false;
+                
+    //            x = rows[i].getElementsByTagName("TD")[0];
+    //            y = rows[i + 1].getElementsByTagName("TD")[0];
+    //            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+    //                shouldSwitch = true;
+    //                break;
+    //            }
+    //        }
+    //        if (shouldSwitch) {
+              
+    //            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+    //            switching = true;
+    //        }
+    //    }
+    //}
+</script>
